@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="RegressionSuite" parallel="tests" thread-count="3">
+    <test name="ChromeTest">
+        <parameter name="browser" value="chrome"/>
+        <parameter name="environment" value="stg"/>
+        <classes>
+            <!--class name="com.practice.priceline.BookHotelTest"/-->
+            <class name="com.practice.priceline.BookFlightTest"/>
+        </classes>
+    </test>
+</suite>
