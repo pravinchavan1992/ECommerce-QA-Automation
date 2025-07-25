@@ -1,0 +1,28 @@
+name: END TO END TEST CASES FOR ECommerce-QA-Automation
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Select browser'
+        required: true
+        default: 'chrome'
+        type: choice
+        options:
+          - 'chrome'
+          - 'firefox'
+          - 'edge'
+      runType:
+        description: 'Select Runtype'
+        required: true
+        default: 'local'
+        type: inputbox
+      headless:
+        description: 'Run tests in headless mode?'
+        required: true
+        default: 'true'
+        type: boolean
+         
+        
+      
+  
