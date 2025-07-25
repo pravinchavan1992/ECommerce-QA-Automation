@@ -42,6 +42,7 @@ jobs:
     # --- Debugging Steps Added ---
     - name: Debug - List Repository Contents
       run: |
+        echo "Current working directory after cd: $(pwd)"
         echo "Listing contents of repository root:"
         ls -la
         echo "Listing contents of 'ECommerce-QA-Automation' directory (if it exists):"
