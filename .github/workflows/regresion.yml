@@ -45,8 +45,7 @@ jobs:
         echo "Current working directory after cd: $(pwd)"
         echo "Listing contents of repository root:"
         ls -la
-        echo "Listing contents of 'ECommerce-QA-Automation' directory (if it exists):"
-        ls -la ECommerce-QA-Automation || echo "'your_selenium_tests' directory not found or cannot be listed."
+
     # --- End Debugging Steps ---
 
     - name: Set up Test Environment (Java/Maven)
@@ -58,9 +57,6 @@ jobs:
 
     - name: Run Selenium Tests
       run: |
-        echo "Attempting to change directory to your_selenium_tests..."
-        cd ECommerce-QA-Automation || { echo "ERROR: 'ECommerce-QA-Automation' directory not found. Please verify the path."; exit 1; }
-        
         echo "Current working directory after cd: $(pwd)"
         echo "Executing Maven command:"
         
