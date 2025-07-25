@@ -67,3 +67,21 @@ jobs:
         echo "Maven command finished. Checking exit code..."
         # GitHub Actions automatically fails a step if the command exits with a non-zero code.
         # This echo just confirms execution reached this point.
+
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v4 # Use the latest version of upload-artifact
+      if: always() # Always upload the report, even if tests failed
+      with:
+        name: allure-report-${{ github.sha }} # Unique name for the artifact (e.g., allure-report-abcdef123)
+        path: ECommerce-QA-Automation/target/allure-report # Path to your generated report directory
+        # retention-days: 5 # Optional: How long to keep the artifact (default is 90 days for GitHub Free)
+
+    # Optional: If you also want to see the Raw Allure Results (XML/JSON files)
+    - name: Upload Allure Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: allure-results-${{ github.sha }}
+        path: ECommerce-QA-Automation/target/allure-results
+        # retention-days: 5
+
