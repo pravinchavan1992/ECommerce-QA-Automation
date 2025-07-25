@@ -22,12 +22,12 @@ on:
           - 'edge'
       runType:
         description: 'Select Runtype'
-        required: false
+        required: true
         default: 'local'
         type: string
       headless:
         description: 'Run tests in headless mode?'
-        required: true
+        required: false
         default: 'true'
         type: boolean
 
@@ -44,7 +44,7 @@ jobs:
         echo "Listing contents of repository root ($GITHUB_WORKSPACE):"
         ls -la ${{ github.workspace }}
         echo "Listing contents of 'your_selenium_tests' directory (if it exists):"
-        ls -la ${{ github.workspace }}/your_selenium_tests || echo "'your_selenium_tests' directory not found at root level."
+        ls -la ${{ github.workspace }}/ECommerce-QA-Automation || echo "'ECommerce-QA-Automations' directory not found at root level."
 
     - name: Set up Test Environment (Java/Maven)
       uses: actions/setup-java@v4
@@ -56,7 +56,7 @@ jobs:
     - name: Run Selenium Tests and Generate Allure Report
       run: |
         # Change to your project directory. THIS IS CRUCIAL FOR RELATIVE PATHS LATER.
-        cd ECommerce-QA-Automation || { echo "ERROR: 'ECommerce-QA-Automation' directory not found. Please verify the path."; exit 1; }
+        # cd ECommerce-QA-Automation || { echo "ERROR: 'ECommerce-QA-Automation' directory not found. Please verify the path."; exit 1; }
         
         echo "Current working directory before Maven: $(pwd)"
         echo "Executing Maven tests with system properties:"
