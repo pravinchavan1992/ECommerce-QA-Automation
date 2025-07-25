@@ -22,7 +22,29 @@ on:
         required: true
         default: 'true'
         type: boolean
-         
+
+jobs:
+  Run-Selenium-Tests:
+    runs-on: buntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Test Environment (e.g., Java/Maven)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+    - name: Run Selenium Tests
+      run: |
+        cd your_selenium_tests # Navigate to your Selenium test project directory
+        # Pass all the workflow_dispatch inputs as -D system properties to Maven
+        # NO webdriver.remote.url needed here, as it's local execution
+        mvn clean test -Dbrowser=${{ github.event.inputs.browser }} \
+                       -Dheadless=${{ github.event.inputs.headless }} \
+                       -DrunType=${{ github.event.inputs.runType }}
         
       
   
