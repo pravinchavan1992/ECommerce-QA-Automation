@@ -16,7 +16,7 @@ on:
         description: 'Select Runtype'
         required: true
         default: 'local'
-        type: inputbox
+        type: string
       headless:
         description: 'Run tests in headless mode?'
         required: true
