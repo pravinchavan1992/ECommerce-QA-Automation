@@ -42,7 +42,7 @@ jobs:
 
       - name: Set up Selenium Grid Environment
         run: |
-          echo "${pwd}"
+          echo ${pwd}
           docker-compose -f docker-compose-v3.yml up -d
 
       - name: Checkout Repository
