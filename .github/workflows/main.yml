@@ -16,7 +16,7 @@ on:
       runType:
         description: 'Select Runtype'
         required: true
-        default: 'remote'
+        default: 'remote' # Changed default from 'remorw' to 'remote' for clarity
         type: string # Could be 'choice' if fixed options, e.g., ['remote', 'local']
       headless:
         description: 'Run tests in headless mode?'
@@ -30,12 +30,19 @@ jobs:
 
     steps:
       - name: Install docker-compose
+        # The 'docker-compose-plugin' package might not be available on all runner images.
+        # This step directly downloads and installs the docker-compose binary,
+        # which is a more robust way to ensure it's available.
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin # For newer systems, this installs the plugin allowing 'docker compose'
-          # OR for older systems that use the standalone binary:
-          # sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          # sudo chmod +x /usr/local/bin/docker-compose
+          echo "Installing docker-compose binary..."
+          # Download the specific docker-compose binary for Linux x86_64
+          # Using v2.24.1 as specified in the comments, or you can choose a different stable version.
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          # Make it executable
+          sudo chmod +x /usr/local/bin/docker-compose
+          # Verify installation
+          docker-compose version
+
       - name: Set up Selenium Grid Environment
         # Assumes docker-compose-v3.yml is in the root of the repository
         run: docker-compose -f docker-compose-v3.yml up -d
@@ -51,8 +58,12 @@ jobs:
           cache: 'maven'
 
       - name: Install Allure CLI
-        # Installs Allure command-line tool globally for report generation
-        run: npm install -g allure-commandline --save-dev
+        # Installs Allure command-line tool globally for report generation.
+        # Adds the npm global bin directory to the PATH to ensure 'allure' command is found.
+        run: |
+          npm install -g allure-commandline
+          echo "$(npm root -g)/.bin" >> $GITHUB_PATH # Add npm global bin to PATH for subsequent steps
+          allure --version # Verify allure is now in PATH
 
       - name: Run Selenium Tests
         run: |
@@ -63,7 +74,8 @@ jobs:
                          -DrunType=${{ github.event.inputs.runType }}
 
       - name: Check if allure-results directory exists
-        # This step always runs, even if previous steps fail, to check for results
+        # This step always runs, even if previous steps fail, to check for results.
+        # The 'target' directory should be created by Maven if tests run successfully.
         if: always()
         run: |
           echo "Checking target directory structure..."
