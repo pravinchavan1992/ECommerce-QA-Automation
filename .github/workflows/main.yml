@@ -16,7 +16,7 @@ on:
       runType:
         description: 'Select Runtype'
         required: true
-        default: 'remorw'
+        default: 'remote'
         type: string # Could be 'choice' if fixed options, e.g., ['remote', 'local']
       headless:
         description: 'Run tests in headless mode?'
@@ -29,6 +29,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install docker-compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin # For newer systems, this installs the plugin allowing 'docker compose'
+          # OR for older systems that use the standalone binary:
+          # sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          # sudo chmod +x /usr/local/bin/docker-compose
       - name: Set up Selenium Grid Environment
         # Assumes docker-compose-v3.yml is in the root of the repository
         run: docker-compose -f docker-compose-v3.yml up -d
