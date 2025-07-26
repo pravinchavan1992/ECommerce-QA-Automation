@@ -1,4 +1,4 @@
-name: END TO END TEST CASES FOR ECommerce-QA-Automation
+name: Remote Execution
 
 on:
   push:
