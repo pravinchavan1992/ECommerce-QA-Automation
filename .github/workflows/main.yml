@@ -42,7 +42,9 @@ jobs:
 
       - name: Set up Selenium Grid Environment
         run: |
-          echo ${pwd}
+          # Use 'pwd' command to print the current working directory
+          pwd
+          # Assumes docker-compose-v3.yml is in the root of the repository
           docker-compose -f docker-compose-v3.yml up -d
 
       - name: Checkout Repository
