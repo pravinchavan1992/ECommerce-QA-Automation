@@ -40,15 +40,7 @@ jobs:
           # Verify installation
           docker-compose version
 
-      - name: Set up Selenium Grid Environment
-        run: |
-          # Use 'pwd' command to print the current working directory
-          pwd
-          ls
-          cd ..
-          ls -a
-          # Assumes docker-compose-v3.yml is in the root of the repository
-          docker-compose -f docker-compose-v3.yml up -d
+
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -59,7 +51,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-
+      - name: Set up Selenium Grid Environment
+        run: |
+          # Use 'pwd' command to print the current working directory
+          pwd
+        
+          # Assumes docker-compose-v3.yml is in the root of the repository
+          docker-compose -f docker-compose-v3.yml up -d
       - name: Install Allure CLI
         # Installs Allure command-line tool globally for report generation.
         # Adds the npm global bin directory to the PATH to ensure 'allure' command is found.
