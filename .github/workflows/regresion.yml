@@ -50,6 +50,7 @@ jobs:
                          -DrunType=${{ github.event.inputs.runType }}
 
       - name: Check if allure-results directory exists
+        if: always()
         run: |
           echo "Checking target directory structure..."
           ls -R target
@@ -59,6 +60,7 @@ jobs:
           fi
 
       - name: Generate Allure Report
+        if: always()
         run: |
           set -e
           allure generate target/allure-results --clean -o target/allure-report
