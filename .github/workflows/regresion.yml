@@ -2,13 +2,9 @@ name: END TO END TEST CASES FOR ECommerce-QA-Automation
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
   workflow_dispatch:
     inputs:
       browser:
@@ -16,10 +12,7 @@ on:
         required: true
         default: 'chrome'
         type: choice
-        options:
-          - 'chrome'
-          - 'firefox'
-          - 'edge'
+        options: ['chrome', 'firefox', 'edge']
       runType:
         description: 'Select Runtype'
         required: true
@@ -39,68 +32,32 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Debug - List Repository Contents (Initial Check)
-      run: |
-        echo "Listing contents of repository root ($GITHUB_WORKSPACE):"
-        ls -la ${{ github.workspace }}
-        echo "Listing contents of 'your_selenium_tests' directory (if it exists):"
-        ls -la ${{ github.workspace }}/ECommerce-QA-Automation || echo "'ECommerce-QA-Automations' directory not found at root level."
-
-    - name: Set up Test Environment (Java/Maven)
+    - name: Set up Java & Maven
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Run Selenium Tests and Generate Allure Report
+    - name: Install Allure CLI
       run: |
-        # Change to your project directory. THIS IS CRUCIAL FOR RELATIVE PATHS LATER.
-        # cd ECommerce-QA-Automation || { echo "ERROR: 'ECommerce-QA-Automation' directory not found. Please verify the path."; exit 1; }
-        
-        echo "Current working directory before Maven: $(pwd)"
-        echo "Executing Maven tests with system properties:"
-        echo "browser: ${{ github.event.inputs.browser }}"
-        echo "headless: ${{ github.event.inputs.headless }}"
-        echo "runType: ${{ github.event.inputs.runType }}"
+        npm install -g allure-commandline --save-dev
 
-        # Run tests and then immediately generate the Allure report
-        # Note: '|| true' is kept for now so the upload step still runs for debugging,
-        # even if tests fail. Remove it for stricter CI behavior later.
+    - name: Run Selenium Tests
+      run: |
+        echo "Running tests with browser=${{ github.event.inputs.browser }}, headless=${{ github.event.inputs.headless }}, runType=${{ github.event.inputs.runType }}"
         mvn clean test -Dbrowser=${{ github.event.inputs.browser }} \
                        -Dheadless=${{ github.event.inputs.headless }} \
-                       -DrunType=${{ github.event.inputs.runType }} \
-                       allure:report || true
-        
-        echo "Maven commands finished."
-        
-        # --- Debugging Allure Report Generation ---
-        echo "Checking for allure-results directory..."
-        ls -la target/allure-results/ || echo "target/allure-results/ not found!"
-        echo "Checking for allure-report directory..."
-        ls -la target/allure-report/ || echo "target/allure-report/ not found!"
-        echo "Listing contents of allure-report directory:"
-        ls -la target/allure-report/ || echo "No files in target/allure-report/"
-        # --- End Debugging Allure Report Generation ---
+                       -DrunType=${{ github.event.inputs.runType }}
 
-    - name: Upload Allure Report
-      uses: actions/upload-artifact@v4
-      if: always() # Ensure this runs even if previous steps failed
-      with:
-        # Path is relative to the *root of the repository* (where checkout happens)
-        # OR relative to the 'working-directory' if defined for the step.
-        # Since 'Run Selenium Tests' changed directory, the path here needs to be absolute
-        # or relative to the default working directory for this upload step.
-        # It's safest to use the full path from GITHUB_WORKSPACE.
-        name: allure-report-${{ github.sha }}
-        path: ECommerce-QA-Automation/target/allure-report # VERIFY THIS PATH CAREFULLY!
-        if-no-files-found: error # Explicitly fail the step if no files are found
-
-    - name: Display Artifact Download Link
-      if: always()
+    - name: Generate Allure Report
       run: |
-        ARTIFACT_NAME="allure-report-${{ github.sha }}"
-        DOWNLOAD_LINK="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${ARTIFACT_NAME}"
-        echo "Allure Report Artifact Download Link:"
-        echo "${DOWNLOAD_LINK}"
-        echo "::notice file=allure_report.md::Download Allure Report Artifact: ${DOWNLOAD_LINK}"
+        allure generate target/allure-results --clean -o target/allure-report
+
+    - name: Upload Allure HTML Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: allure-report-${{ github.sha }}
+        path: target/allure-report
+        if-no-files-found: error
