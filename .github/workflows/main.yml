@@ -30,9 +30,6 @@ jobs:
 
     steps:
       - name: Install docker-compose
-        # The 'docker-compose-plugin' package might not be available on all runner images.
-        # This step directly downloads and installs the docker-compose binary,
-        # which is a more robust way to ensure it's available.
         run: |
           echo "Installing docker-compose binary..."
           # Download the specific docker-compose binary for Linux x86_64
@@ -44,8 +41,9 @@ jobs:
           docker-compose version
 
       - name: Set up Selenium Grid Environment
-        # Assumes docker-compose-v3.yml is in the root of the repository
-        run: docker-compose -f docker-compose-v3.yml up -d
+        run: |
+          echo "${pwd}"
+          docker-compose -f docker-compose-v3.yml up -d
 
       - name: Checkout Repository
         uses: actions/checkout@v4
