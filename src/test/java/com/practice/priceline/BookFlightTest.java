@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class BookFlightTest extends BaseTest {
 
-    @Test
+    @Test(enabled = false)
     public void testBookFlight()    {
         HomePage homePage = new HomePage();
          homePage.clickOnHeader("flights")

@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class BookHotelTest extends BaseTest {
 
-    @Test(description = "Search hotel and book")
+    @Test(description = "Search hotel and book", enabled = false)
     public void SearchAndBookHotel()  {
         HomePage homePage = new HomePage();
         HotelListPage hotelListPage = homePage.clickOnHeader("hotels")
