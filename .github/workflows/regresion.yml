@@ -47,8 +47,7 @@ jobs:
           echo "Running tests with browser=${{ github.event.inputs.browser }}, headless=${{ github.event.inputs.headless }}, runType=${{ github.event.inputs.runType }}"
           mvn clean test -Dbrowser=${{ github.event.inputs.browser }} \
                          -Dheadless=${{ github.event.inputs.headless }} \
-                         -DrunType=${{ github.event.inputs.runType }} \
-                         -Dmaven.test.failure.ignore=true
+                         -DrunType=${{ github.event.inputs.runType }}
 
       - name: Check if allure-results directory exists
         if: always()
